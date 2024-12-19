@@ -3,7 +3,7 @@ name = "fan-controller"
 version = "0.1.0"
 authors = ["stitchynyan"]
 edition = "2021"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 
 [[bin]]
 name = "fan-controller"
