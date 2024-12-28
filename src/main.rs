@@ -21,6 +21,12 @@ fn main() -> ! {
     // Assign a pin as an output
     let mut led = pins.d13.into_output();
 
+    // Analog Input
+    let mut adc = arduino_hal::Adc::new(dp.ADC, Default::default());
+
+    // Configure Voltage Input
+    let voltage_pin = pins.a3.into_analog_input(&mut adc);
+
     // Configure I2C
     let i2c = arduino_hal::I2c::new(
         dp.TWI,
@@ -58,6 +64,8 @@ fn main() -> ! {
 
     loop {
         led.toggle();
+        // Voltage to Display
+        let voltage = voltage_pin.analog_read(&mut adc);
         arduino_hal::delay_ms(1000);
     }
 }
