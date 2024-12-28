@@ -27,6 +27,14 @@ fn main() -> ! {
     // Configure Voltage Input
     let voltage_pin = pins.a3.into_analog_input(&mut adc);
 
+    // PWM Pin
+    let tc1 = dp.TC1;
+    tc1.tccr1a
+        .write(|w| w.wgm1().bits(0b01).com1a().match_clear());
+    tc1.tccr1b
+        .write(|w| w.wgm1().bits(0b01).cs1().prescale_64());
+    pins.d9.into_output();
+
     // Configure I2C
     let i2c = arduino_hal::I2c::new(
         dp.TWI,
@@ -66,6 +74,9 @@ fn main() -> ! {
         led.toggle();
         // Voltage to Display
         let voltage = voltage_pin.analog_read(&mut adc);
+        // PWM STUFFS
+        tc1.ocr1a.write(|w| w.bits((voltage / 3) as u16));
+
         arduino_hal::delay_ms(1000);
     }
 }
