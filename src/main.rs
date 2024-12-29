@@ -74,9 +74,26 @@ fn main() -> ! {
         led.toggle();
         // Voltage to Display
         let voltage = voltage_pin.analog_read(&mut adc);
+        let mut buffer = [0u8; 4];
+        base_10_bytes(voltage.into(), &mut buffer);
         // PWM STUFFS
         tc1.ocr1a.write(|w| w.bits((voltage / 3) as u16));
 
         arduino_hal::delay_ms(1000);
     }
+}
+
+fn base_10_bytes(mut n: u64, buf: &mut [u8]) -> &[u8] {
+    if n == 0 {
+        return b"0";
+    }
+    let mut i = 0;
+    while n > 0 {
+        buf[i] = (n % 10) as u8 + b'0';
+        n /= 10;
+        i += 1;
+    }
+    let slice = &mut buf[..i];
+    slice.reverse();
+    &*slice
 }
