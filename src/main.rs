@@ -12,6 +12,8 @@ use embedded_graphics::{
     text::{Baseline, Text},
 };
 
+const ANALOG_READ_MAX: u16 = 768;
+
 #[arduino_hal::entry]
 fn main() -> ! {
     // Object which holds everything on the arduino (eeprom, CPU, etc)
@@ -68,10 +70,14 @@ fn main() -> ! {
 
     loop {
         led.toggle();
+
         // Voltage to Display
         let voltage = voltage_pin.analog_read(&mut adc);
-        let mut buffer = [0u8; 4];
-        base_10_bytes(voltage.into(), &mut buffer);
+        let duty = to_safe_duty(voltage);
+
+        let mut buffer = [0u8; 3];
+        base_10_bytes(duty.into(), &mut buffer);
+
         //* TEXT DISPLAY *//
 
         // Reset Updating Display Area
@@ -93,10 +99,21 @@ fn main() -> ! {
         // Flush Display
         display.flush().unwrap();
 
-        // PWM STUFFS
-        tc1.ocr1a.write(|w| w.bits((voltage / 3) as u16));
+        // PWM Output Compare
+        tc1.ocr1a.write(|w| w.bits(voltage / 3 as u16));
 
         arduino_hal::delay_ms(1000);
+    }
+}
+
+// Fans want to have a minimum duty cycle of 20%, this function makes sure this is the case
+fn to_safe_duty(voltage: u16) -> u32 {
+    let duty = voltage as u32 * 100 as u32 / ANALOG_READ_MAX as u32;
+
+    if duty < 20 {
+        return 0;
+    } else {
+        return duty;
     }
 }
 
