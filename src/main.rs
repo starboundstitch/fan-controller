@@ -8,6 +8,7 @@ use embedded_graphics::{
     mono_font::{ascii::FONT_6X10, MonoTextStyleBuilder},
     pixelcolor::BinaryColor,
     prelude::*,
+    primitives::{PrimitiveStyle, Rectangle},
     text::{Baseline, Text},
 };
 
@@ -57,6 +58,8 @@ fn main() -> ! {
         .text_color(BinaryColor::On)
         .build();
 
+    // Fill
+    let fill = PrimitiveStyle::with_fill(BinaryColor::Off);
 
     // Write Text to the display
     Text::with_baseline("Fan Speed:", Point::zero(), text_style, Baseline::Top)
@@ -70,6 +73,12 @@ fn main() -> ! {
         let mut buffer = [0u8; 4];
         base_10_bytes(voltage.into(), &mut buffer);
         //* TEXT DISPLAY *//
+
+        // Reset Updating Display Area
+        Rectangle::new(Point::new(0, 16), Size::new(50, 20))
+            .into_styled(fill)
+            .draw(&mut display)
+            .unwrap();
 
         // Draw Duty Cycle
         Text::with_baseline(
