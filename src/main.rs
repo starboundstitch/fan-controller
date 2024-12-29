@@ -57,18 +57,11 @@ fn main() -> ! {
         .text_color(BinaryColor::On)
         .build();
 
-    // Write Text to the display
-    Text::with_baseline("Hello world!", Point::zero(), text_style, Baseline::Top)
-        .draw(&mut display)
-        .unwrap();
 
     // Write Text to the display
-    Text::with_baseline("Hello Rust!", Point::new(0, 16), text_style, Baseline::Top)
+    Text::with_baseline("Fan Speed:", Point::zero(), text_style, Baseline::Top)
         .draw(&mut display)
         .unwrap();
-
-    // Flush to the display
-    display.flush().unwrap();
 
     loop {
         led.toggle();
@@ -76,6 +69,21 @@ fn main() -> ! {
         let voltage = voltage_pin.analog_read(&mut adc);
         let mut buffer = [0u8; 4];
         base_10_bytes(voltage.into(), &mut buffer);
+        //* TEXT DISPLAY *//
+
+        // Draw Duty Cycle
+        Text::with_baseline(
+            unsafe { core::str::from_utf8_unchecked(&buffer) },
+            Point::new(0, 16),
+            text_style,
+            Baseline::Top,
+        )
+        .draw(&mut display)
+        .unwrap();
+
+        // Flush Display
+        display.flush().unwrap();
+
         // PWM STUFFS
         tc1.ocr1a.write(|w| w.bits((voltage / 3) as u16));
 
