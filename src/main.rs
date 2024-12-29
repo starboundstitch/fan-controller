@@ -80,6 +80,8 @@ fn main() -> ! {
         for val in buffer.iter_mut() {
             *val = b' ';
         }
+        // Default to zero on first char
+        buffer[0] = b'0';
         base_10_bytes(duty.into(), &mut buffer);
 
         //* TEXT DISPLAY *//
