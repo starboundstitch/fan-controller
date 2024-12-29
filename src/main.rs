@@ -76,6 +76,10 @@ fn main() -> ! {
         let duty = to_safe_duty(voltage);
 
         let mut buffer = [0u8; 3];
+        // Initialize as a space so it doesn't display
+        for val in buffer.iter_mut() {
+            *val = b' ';
+        }
         base_10_bytes(duty.into(), &mut buffer);
 
         //* TEXT DISPLAY *//
