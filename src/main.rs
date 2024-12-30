@@ -69,8 +69,16 @@ fn main() -> ! {
         .draw(&mut display)
         .unwrap();
 
+    // LED Toggle
+    let mut led_time = 0;
+
     loop {
-        led.toggle();
+        if led_time == 1000 / DELAY_TIME {
+            led_time = 0;
+            led.toggle();
+        } else {
+            led_time = led_time + 1;
+        }
 
         // Voltage to Display
         let voltage = voltage_pin.analog_read(&mut adc);
