@@ -106,7 +106,7 @@ fn main() -> ! {
         display.flush().unwrap();
 
         // PWM Output Compare
-        tc1.ocr1a.write(|w| w.bits(voltage / 3 as u16));
+        tc1.ocr1a.write(|w| w.bits((duty * 264 / 100) as u16));
 
         arduino_hal::delay_ms(1000);
     }
