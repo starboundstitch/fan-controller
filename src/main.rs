@@ -108,6 +108,14 @@ fn main() -> ! {
         // PWM Output Compare
         tc1.ocr1a.write(|w| w.bits((duty * 264 / 100) as u16));
 
+        // Disable Counter when at 0
+        if duty == 0 {
+            tc1.tccr1a.write(|w| w.wgm1().bits(0b00));
+        } else {
+            tc1.tccr1a
+                .write(|w| w.wgm1().bits(0b01).com1a().match_clear());
+        }
+
         arduino_hal::delay_ms(1000);
     }
 }
