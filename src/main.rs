@@ -13,6 +13,7 @@ use embedded_graphics::{
 };
 
 const ANALOG_READ_MAX: u16 = 768;
+const DELAY_TIME: u16 = 100;
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -116,7 +117,7 @@ fn main() -> ! {
                 .write(|w| w.wgm1().bits(0b01).com1a().match_clear());
         }
 
-        arduino_hal::delay_ms(1000);
+        arduino_hal::delay_ms(DELAY_TIME);
     }
 }
 
