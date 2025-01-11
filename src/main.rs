@@ -135,6 +135,9 @@ fn to_safe_duty(voltage: u16) -> u32 {
 
     if duty < 20 {
         return 0;
+    }
+    if duty > 95 {
+        return 100;
     } else {
         return duty;
     }
