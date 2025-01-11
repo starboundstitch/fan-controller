@@ -12,7 +12,7 @@ use embedded_graphics::{
     text::{Baseline, Text},
 };
 
-const ANALOG_READ_MAX: u16 = 768;
+const ANALOG_READ_MAX: u16 = 730;
 const DELAY_TIME: u16 = 100;
 
 #[arduino_hal::entry]
